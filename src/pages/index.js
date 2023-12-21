@@ -27,8 +27,12 @@ const IndexPage = () => {
   }, [logoWidth, logoHeight]);
 
   //initial page width & height
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof Window !== "undefined" ? window.innerWidth : 0
+  );
+  const [windowHeight, setWindowHeight] = useState(
+    typeof Window !== "undefined" ? window.innerHeight : 0
+  );
 
   useEffect(() => {
     const updateWindowDimensions = () => {

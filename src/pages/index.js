@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
+import styled, { keyframes } from "styled-components";
 import FR from "../images/FR-Logo.svg";
 
 const pageStyles = {
@@ -8,82 +9,37 @@ const pageStyles = {
 };
 
 const IndexPage = () => {
-  //initial logo pos and refresh speed
-  const cycleSpeed = 42;
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const [speed, setSpeed] = useState({ x: 10, y: 10 });
-
-  //initial logo width & height
-  const logoRef = useRef(null);
-  const [logoWidth, setLogoWidth] = useState(0);
-  const [logoHeight, setLogoHeight] = useState(0);
-
-  useEffect(() => {
-    if (logoRef.current) {
-      const { width, height } = logoRef.current.getBoundingClientRect();
-      setLogoWidth(width);
-      setLogoHeight(height);
+  const x = keyframes`
+    0% {
+      left: 0;
     }
-  }, [logoWidth, logoHeight]);
-
-  //initial page width & height
-  const [windowWidth, setWindowWidth] = useState(
-    typeof Window !== "undefined" ? window.innerWidth : 0
-  );
-  const [windowHeight, setWindowHeight] = useState(
-    typeof Window !== "undefined" ? window.innerHeight : 0
-  );
-
-  useEffect(() => {
-    const updateWindowDimensions = () => {
-      setWindowWidth(window.innerWidth);
-      setWindowHeight(window.innerHeight);
-    };
-
-    window.addEventListener("resize", updateWindowDimensions);
-
-    return () => {
-      window.removeEventListener("resize", updateWindowDimensions);
-    };
-  }, []);
-
-  //check hits
-  const checkHit = () => {
-    if (pos.x + logoWidth >= windowWidth || pos.x <= 0) {
-      setSpeed({ x: (speed.x *= -1), y: speed.y });
+    100% {
+      left: 100%;
+      margin-left: -400px;
     }
+  `;
 
-    if (pos.y + logoHeight >= windowHeight || pos.y <= 0) {
-      setSpeed({ x: speed.x, y: (speed.y *= -1) });
+  const y = keyframes`
+    0% {
+      top: 0;
     }
-  };
+    100% {
+      top: 100%;
+      margin-top: -150px;
+    }
+  `;
 
-  //update position
-  useEffect(() => {
-    const updateInterval = setInterval(() => {
-      setPos((prevPos) => ({
-        x: (prevPos.x += speed.x),
-        y: (prevPos.y += speed.y),
-      }));
-      checkHit();
-    }, cycleSpeed);
-
-    return () => clearInterval(updateInterval);
-  }, [pos, speed]);
+  const LogoThing = styled.img`
+    position: fixed;
+    width: 400px;
+    height: 150px;
+    animation: 4s linear 0s infinite alternate none running ${x},
+      5.5s linear 0s infinite alternate none running ${y};
+  `;
 
   return (
     <main style={pageStyles}>
-      <img
-        ref={logoRef}
-        src={FR}
-        style={{
-          position: "fixed",
-          animation:
-            "4s linear 0s infinite alternate none running x, 5.5s linear 0s infinite alternate none running y",
-          transform: `translate(${pos.x}px, ${pos.y}px)`,
-        }}
-        alt='Friend Ranch'
-      />
+      <LogoThing src={FR} alt='Friend Ranch' />
     </main>
   );
 };
